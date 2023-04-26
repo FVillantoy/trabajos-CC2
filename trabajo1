@@ -74,7 +74,6 @@ public:
             temp[i] = data[i+j];
             }
         }
-        delete[] data;
         data = temp;
     }
 };
