@@ -1,0 +1,155 @@
+#include <iostream>
+#define FOR(a,b,c)  for(int a=b; (a)<(c);a++)
+
+using namespace std;
+
+
+//nueva clase Definicion:
+
+class Definicion{
+private:
+    string obj;
+    string def;
+public:
+    Definicion(){
+        this->obj = "";
+        this->def = "";
+    }
+    Definicion(string obj, string def){
+        this->obj = obj;
+        this->def = def;
+    }
+    Definicion(const Definicion &D){
+        this->obj = D.obj;
+        this->def = D.def;
+    }
+    friend ostream& operator<<(ostream&, const Definicion&);
+};
+ostream& operator<<(ostream& output, const Definicion& Def){
+    output<<Def.obj<<" es "<<Def.def<<" --";
+}
+
+
+
+//clase dynamicintegerarray:
+
+template <typename T>
+class DynamicIntegerArray{
+private:
+    T *data;
+    int size;
+public:
+    DynamicIntegerArray(){
+        this->size = 0;
+        data = new T[0];
+    }
+    DynamicIntegerArray(T arr[], int size){
+        this->size = size;
+        data = new T[size];
+        FOR(i,0,size){
+            data[i] = arr[i];
+        }
+    }
+    DynamicIntegerArray(const DynamicIntegerArray &n){
+        this->size = n.size;
+        data = new T[size];
+        FOR(i,0,size){
+            data[i] = n.data[i];
+        }
+    }
+    void print() const{
+        cout<<"[ ";
+        FOR(i,0,size){
+            cout<< data[i]<<" "; //i need overload cout operator to new classs
+        }
+        cout<<"]";
+    }
+    ~DynamicIntegerArray(){
+        delete[] data;
+    }
+    void PushBack(T val){
+        this->size++;
+        T *temp = new T [size];
+        temp[0] = val;
+        FOR(i,1,size){
+            temp[i] = data[i-1];
+        }
+        delete[] data;
+        data = temp;
+    }
+    void Insert(T val, int pos){
+        this->size++;
+        T *temp = new T [size];
+        pos--;
+        int j = 0;
+        temp[pos] = val;
+        FOR(i,0,size){
+            if(i == pos){
+                j = 1;
+            }
+            else{
+            temp[i] = data[i-j];
+            }
+        }
+        delete[] data;
+        data = temp;
+    }
+    void remove(int pos){
+        this->size--;
+        T *temp = new T [size];
+        pos--;
+        int j = 0;
+        FOR(i,0,size){
+            if(i == pos){
+                j = 1;
+            }
+            temp[i] = data[i+j];
+        }
+        delete[] data;
+        data = temp;
+    }
+};
+
+
+int main()
+{
+    // con int
+    int arryi[5] = {1,8,9,5,3};
+    DynamicIntegerArray <int>A(arryi,5);
+    A.print();
+    A.PushBack(8);
+    A.print();
+    A.Insert(7,2);
+    A.print();
+    A.remove(4);
+    A.print();
+    //con chars
+    char arryc[5] = {'a','b','c','d','e'};
+    DynamicIntegerArray <char>B(arryc,5);
+    cout<<endl;
+    B.print();
+    B.PushBack('c');
+    B.print();
+    B.Insert('f',2);
+    B.print();
+    B.remove(4);
+    B.print();
+    //con objetos tipo definicion:
+    Definicion arryd[4] = { Definicion("arbol","alto"),
+                        Definicion("tallo","grueso"),
+                        Definicion("hoja","verde"),
+                        Definicion("raiz","firme")};
+    DynamicIntegerArray <Definicion>C(arryd,4);
+    cout<<endl;
+    C.print();
+    cout<<endl;
+    C.PushBack(Definicion("flor","blanca"));
+    C.print();
+    cout<<endl;
+    C.Insert(Definicion("fruto","dulce"),2);
+    C.print();
+    cout<<endl;
+    C.remove(4);
+    C.print();
+    return 0;
+}
